@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=chat_nexlyhub
+POSTGRES_USER=IEwgtDAbEMSLlJYfhNnYCDGajpUhSOjB
+POSTGRES_PASSWORD=pfX4P8Odx4FoIuV81VOS9X1uB95QCwsNj867KSZsvoyfR2gylWN0uK22yxFoeQ3S
