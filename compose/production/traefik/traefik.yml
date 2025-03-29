@@ -48,6 +48,14 @@ http:
       tls:
         certResolver: letsencrypt
 
+    web-frontend-router:
+      rule: 'Host(`chat.nexlyhub.in`)'
+      entryPoints:
+        - web-secure
+      service: vue-frontend
+      tls:
+        certResolver: letsencrypt
+
   middlewares:
     csrf:
       # https://doc.traefik.io/traefik/master/middlewares/http/headers/#hostsproxyheaders
@@ -65,6 +73,11 @@ http:
       loadBalancer:
         servers:
           - url: http://nginx:80
+
+    vue-frontend:
+      loadBalancer:
+        servers:
+          - url: http://vue-frontend:80
 
 providers:
   # https://doc.traefik.io/traefik/master/providers/file/
