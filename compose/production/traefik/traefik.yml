@@ -28,7 +28,7 @@ certificatesResolvers:
 http:
   routers:
     web-secure-router:
-      rule: 'Host(`chat.nexlyhub.in`)'
+      rule: 'Host(`api-chat.nexlyhub.in`)'
       entryPoints:
         - web-secure
       middlewares:
@@ -39,7 +39,7 @@ http:
         certResolver: letsencrypt
 
     web-media-router:
-      rule: 'Host(`chat.nexlyhub.in`) && PathPrefix(`/media/`)'
+      rule: 'Host(`api-chat.nexlyhub.in`) && PathPrefix(`/media/`)'
       entryPoints:
         - web-secure
       middlewares:
