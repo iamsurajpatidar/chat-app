@@ -56,7 +56,7 @@ services:
     image: chat_nexlyhub_local_nginx
     container_name: nginx-app
     depends_on:
-      - vuejs
+       - django
     volumes:
       - production_django_media:/usr/share/nginx/media:ro
       - production_vue_dist:/usr/share/nginx/html:ro
