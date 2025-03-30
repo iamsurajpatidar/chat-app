@@ -1,5 +1,5 @@
-# Build Stage
-FROM node:lts-alpine AS build-stage
+# Base image
+FROM node:18 AS build-stage
 
 # Set working directory
 WORKDIR /app
@@ -9,15 +9,22 @@ RUN apk add --no-cache nodejs npm
 
 # Copy package.json & package-lock.json separately for better caching
 COPY chat-frontend/package.json chat-frontend/package-lock.json ./
-
-# Install dependencies
 RUN npm install
 
 # Copy the entire project
 COPY chat-frontend/. .
 
-# Build the Vue.js application
+# Build Vue.js project
 RUN npm run build
 
-# Debug: Ensure the files are built
-RUN ls -lah /app/dist
+# Production stage
+FROM nginx:latest AS production-stage
+
+# Remove default nginx config
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Copy built Vue app to Nginx html directory
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+
+# Expose port
+EXPOSE 80
