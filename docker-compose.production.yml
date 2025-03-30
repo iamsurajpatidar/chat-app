@@ -55,7 +55,7 @@ services:
     image: chat_nexlyhub_production_vuejs
     volumes:
       - production_vue_dist:/app/dist  # ✅ Ensure build output is saved to volume
-    command: npm run build  # ✅ Vue.js should build at container creation
+#    command: npm run build  # ✅ Vue.js should build at container creation
 
   nginx:
     build:
