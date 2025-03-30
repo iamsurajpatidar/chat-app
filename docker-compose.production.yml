@@ -54,7 +54,10 @@ services:
     image: chat_nexlyhub_production_vuejs
 
   nginx:
-    image: nginx:stable-alpine
+    build:
+      context: .
+      dockerfile: ./compose/production/nginx/Dockerfile
+    image: chat_nexlyhub_local_nginx
     container_name: nginx-app
     depends_on:
       - vuejs
