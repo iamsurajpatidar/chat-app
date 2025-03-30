@@ -4,29 +4,26 @@ FROM node:lts-alpine AS build-stage
 # Set working directory
 WORKDIR /app
 
-# Ensure npm is installed (in case it's missing)
+# Ensure npm is installed
 RUN apk add --no-cache nodejs npm
 
-# Copy only package files to leverage Docker caching
-COPY package*.json ./
+# Copy package.json and package-lock.json explicitly from chat-frontend
+COPY chat-frontend/package.json chat-frontend/package-lock.json ./
+
+# Verify the files exist (debugging step)
+RUN ls -l
 
 # Install dependencies
 RUN npm install
 
-# Copy remaining application files
-COPY . .
+# Copy the rest of the frontend files
+COPY chat-frontend/. .
 
 # Build Vue.js application
 RUN npm run build
 
 # Production Stage
 FROM nginx:stable-alpine AS production-stage
-
-# Copy built files to Nginx serving directory
 COPY --from=build-stage /app/dist /usr/share/nginx/html
-
-# Expose port 80
 EXPOSE 80
-
-# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
