@@ -1,21 +1,19 @@
-FROM node:18 AS build
+FROM node:18-alpine AS build
+
 
 WORKDIR /app
 
-# Copy package files
+# Copy package.json and install dependencies
 COPY chat-frontend/package.json chat-frontend/package-lock.json ./
-
-# Install dependencies
 RUN npm install
 
-# Copy the frontend source code
+# Copy the rest of the app and build
 COPY chat-frontend/ ./
-
-# Build the project
 RUN npm run build
 
-# Use Nginx to serve static files
+# Use Nginx to serve Vue app
 FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
+
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
