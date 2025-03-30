@@ -51,26 +51,18 @@ services:
       - chat-network
 
   traefik:
-    image: traefik:v2.10
-    container_name: traefik
-    restart: always
-    command:
-      - "--api.dashboard=true"
-      - "--providers.docker=true"
-      - "--providers.file.filename=/etc/traefik/traefik.yml"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.web-secure.address=:443"
-      - "--certificatesresolvers.letsencrypt.acme.email=suraj-patidar@chat.nexlyhub.in"
-      - "--certificatesresolvers.letsencrypt.acme.storage=/etc/traefik/acme/acme.json"
-      - "--certificatesresolvers.letsencrypt.acme.httpChallenge.entryPoint=web"
+    build:
+      context: .
+      dockerfile: ./compose/production/traefik/Dockerfile
+    image: chat_nexlyhub_production_traefik
     depends_on:
       - django
     volumes:
       - production_traefik:/etc/traefik/acme
       - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
-      - '80:80'
-      - '443:443'
+      - '0.0.0.0:80:80'
+      - '0.0.0.0:443:443'
     networks:
       - chat-network
 
