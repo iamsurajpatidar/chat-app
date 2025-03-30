@@ -1,7 +1,9 @@
 volumes:
   chat_nexlyhub_local_postgres_data: {}
   chat_nexlyhub_local_postgres_data_backups: {}
-  
+  node_modules: {}
+
+
 
 services:
   django:
@@ -32,3 +34,16 @@ services:
       - chat_nexlyhub_local_postgres_data_backups:/backups
     env_file:
       - ./.envs/.local/.postgres
+
+  vuejs:
+    build:
+      context: .
+      dockerfile: ./compose/local/vuejs/Dockerfile
+    image: chat_nexlyhub_local_vuejs
+    container_name: chat_nexlyhub_local_vuejs
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./chat-frontend:/app
+      - node_modules:/app/node_modules
+

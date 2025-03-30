@@ -3,25 +3,20 @@ log:
 
 entryPoints:
   web:
-    # http
     address: ':80'
     http:
-      # https://doc.traefik.io/traefik/routing/entrypoints/#entrypoint
       redirections:
         entryPoint:
           to: web-secure
 
   web-secure:
-    # https
     address: ':443'
 
 certificatesResolvers:
   letsencrypt:
-    # https://doc.traefik.io/traefik/https/acme/#lets-encrypt
     acme:
       email: 'suraj-patidar@chat.nexlyhub.in'
       storage: /etc/traefik/acme/acme.json
-      # https://doc.traefik.io/traefik/https/acme/#httpchallenge
       httpChallenge:
         entryPoint: web
 
@@ -35,7 +30,6 @@ http:
         - csrf
       service: django
       tls:
-        # https://doc.traefik.io/traefik/routing/routers/#certresolver
         certResolver: letsencrypt
 
     web-media-router:
@@ -52,14 +46,12 @@ http:
       rule: 'Host(`chat.nexlyhub.in`)'
       entryPoints:
         - web-secure
-      service: vue-frontend
+      service: nginx-frontend  # ✅ Change service from `vue-frontend` to `nginx`
       tls:
         certResolver: letsencrypt
 
   middlewares:
     csrf:
-      # https://doc.traefik.io/traefik/master/middlewares/http/headers/#hostsproxyheaders
-      # https://docs.djangoproject.com/en/dev/ref/csrf/#ajax
       headers:
         hostsProxyHeaders: ['X-CSRFToken']
 
@@ -74,13 +66,12 @@ http:
         servers:
           - url: http://nginx:80
 
-    vue-frontend:
+    nginx-frontend:  # ✅ Serve Vue.js from Nginx instead of Vue container
       loadBalancer:
         servers:
-          - url: http://vue-frontend:80
+          - url: http://nginx:80
 
 providers:
-  # https://doc.traefik.io/traefik/master/providers/file/
   file:
     filename: /etc/traefik/traefik.yml
     watch: true
