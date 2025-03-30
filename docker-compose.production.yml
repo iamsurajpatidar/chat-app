@@ -55,7 +55,7 @@ services:
     image: chat_nexlyhub_production_vuejs
     volumes:
       - production_vue_dist:/app/dist  # Save built Vue files to shared volume
-
+    command: echo "Vue.js build completed successfully"
   nginx:
     build:
       context: .
