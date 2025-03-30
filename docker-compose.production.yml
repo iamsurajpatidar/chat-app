@@ -3,7 +3,6 @@ volumes:
   production_postgres_data_backups: {}
   production_traefik: {}
   production_django_media: {}
-  production_vue_dist: {}
 
 services:
   django:
@@ -53,8 +52,6 @@ services:
       context: .
       dockerfile: ./compose/production/vuejs/Dockerfile
     image: chat_nexlyhub_production_vuejs
-    volumes:
-      - production_vue_dist:/app/dist
 
   nginx:
     image: nginx:stable-alpine
@@ -63,6 +60,4 @@ services:
       - vuejs
       - django
     volumes:
-      - production_vue_dist:/usr/share/nginx/html:ro
       - production_django_media:/usr/share/nginx/media:ro
-

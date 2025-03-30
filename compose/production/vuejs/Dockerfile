@@ -19,6 +19,9 @@ COPY chat-frontend/. .
 # Build the Vue.js application
 RUN npm run build
 
+# Debug: Check if files exist
+RUN ls -lah /app/dist
+
 # Production Stage - Serve with Nginx
 FROM nginx:stable-alpine AS production-stage
 
