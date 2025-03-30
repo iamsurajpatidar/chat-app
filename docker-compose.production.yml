@@ -48,14 +48,6 @@ services:
   redis:
     image: docker.io/redis:6
 
-  vuejs:
-    build:
-      context: .
-      dockerfile: ./compose/production/vuejs/Dockerfile
-    image: chat_nexlyhub_production_vuejs
-    volumes:
-      - production_vue_dist:/app/dist  # Ensure Vue build output is stored
-    command: npm run build  # Force Vue build
 
   nginx:
     build:
