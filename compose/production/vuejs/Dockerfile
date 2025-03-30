@@ -1,11 +1,11 @@
 # Base image
-FROM node:18 AS build-stage
+FROM node:lts-alpine AS build-stage
 
 # Set working directory
 WORKDIR /app
 
-# Install Node.js and npm
-RUN apk add --no-cache nodejs npm
+# Install necessary dependencies
+RUN apk add --no-cache git
 
 # Copy package.json & package-lock.json separately for better caching
 COPY chat-frontend/package.json chat-frontend/package-lock.json ./
@@ -18,7 +18,7 @@ COPY chat-frontend/. .
 RUN npm run build
 
 # Production stage
-FROM nginx:latest AS production-stage
+FROM nginx:alpine AS production-stage
 
 # Remove default nginx config
 RUN rm /etc/nginx/conf.d/default.conf
