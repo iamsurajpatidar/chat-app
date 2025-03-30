@@ -65,5 +65,4 @@ services:
     volumes:
       - production_vue_dist:/usr/share/nginx/html:ro
       - production_django_media:/usr/share/nginx/media:ro
-    ports:
-      - "80:80"
+
