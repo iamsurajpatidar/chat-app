@@ -6,18 +6,15 @@ volumes:
   production_traefik: {}
   production_django_media: {}
 
-networks:
-  chat-network:
-    external: true
+
 
 services:
   django:
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
+
     image: chat_nexlyhub_production_django
-    container_name: django
-    restart: always
     volumes:
       - production_django_media:/app/chat_nexlyhub/media
     depends_on:
@@ -27,28 +24,17 @@ services:
       - ./.envs/.production/.django
       - ./.envs/.production/.postgres
     command: /start
-    labels:
-      - "traefik.http.routers.web-secure-router.rule=Host(`api-chat.nexlyhub.in`)"
-      - "traefik.http.routers.web-secure-router.entrypoints=web-secure"
-      - "traefik.http.routers.web-secure-router.tls.certresolver=letsencrypt"
-      - "traefik.http.services.django.loadbalancer.server.url=http://django:8000"
-    networks:
-      - chat-network
 
   postgres:
     build:
       context: .
       dockerfile: ./compose/production/postgres/Dockerfile
     image: chat_nexlyhub_production_postgres
-    container_name: postgres
-    restart: always
     volumes:
       - production_postgres_data:/var/lib/postgresql/data
       - production_postgres_data_backups:/backups
     env_file:
       - ./.envs/.production/.postgres
-    networks:
-      - chat-network
 
   traefik:
     build:
@@ -59,16 +45,19 @@ services:
       - django
     volumes:
       - production_traefik:/etc/traefik/acme
-      - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
       - '0.0.0.0:80:80'
       - '0.0.0.0:443:443'
-    networks:
-      - chat-network
 
   redis:
-    image: redis:6
-    container_name: redis
-    restart: always
-    networks:
-      - chat-network
+    image: docker.io/redis:6
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./compose/production/nginx/Dockerfile
+    image: chat_nexlyhub_production_nginx
+    depends_on:
+      - django
+    volumes:
+      - production_django_media:/usr/share/nginx/media:ro
