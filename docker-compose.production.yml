@@ -54,17 +54,17 @@ services:
       dockerfile: ./compose/production/vuejs/Dockerfile
     image: chat_nexlyhub_production_vuejs
     volumes:
-      - production_vue_dist:/app/dist  # ✅ Ensure build output is saved to volume
-#    command: npm run build  # ✅ Vue.js should build at container creation
+      - production_vue_dist:/app/dist
 
   nginx:
-    build:
-      context: .
-      dockerfile: ./compose/production/nginx/Dockerfile
-    image: chat_nexlyhub_production_nginx
+    image: nginx:stable-alpine
+    container_name: nginx-app
     depends_on:
-      - django
       - vuejs
+      - django
     volumes:
+      - production_vue_dist:/usr/share/nginx/html:ro
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
       - production_django_media:/usr/share/nginx/media:ro
-      - production_vue_dist:/usr/share/nginx/html:ro  # ✅ Serve Vue.js files from built volume
+    ports:
+      - "80:80"
