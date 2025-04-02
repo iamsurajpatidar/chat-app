@@ -51,7 +51,7 @@ services:
 
   redis:
     image: docker.io/redis:6
-    container_name: captain_local_redis  # Adding container name for Redis
+    container_name: chat_nexlyhub_prod_redis  # Adding container name for Redis
     hostname: redis
 
   nginx:
