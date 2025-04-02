@@ -341,3 +341,5 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+WHITENOISE_MANIFEST_STRICT = False
