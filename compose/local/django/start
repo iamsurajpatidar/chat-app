@@ -6,4 +6,4 @@ set -o nounset
 
 
 python manage.py migrate
-exec python manage.py runserver_plus 0.0.0.0:8000
+exec /usr/local/bin/daphne -b 0.0.0.0 -p 5000 config.asgi:application

@@ -1,0 +1,909 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Chat{% endblock %}
+{% block css %}
+  <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="{% static 'dashboard/css/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+
+    <!-- CSS Front Template -->
+    <link rel="stylesheet" href="{% static 'dashboard/css/bootstrap-datepicker.min.css' %}">
+    <link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'dashboard/css/slick.css' %}">
+    <link href="{% static 'dashboard/css/style.css' %}" rel="stylesheet">
+  <style>
+  /* ======= Existing Styles ======= */
+.hwe__icon-emoji--happy {
+    display: inline-flex;
+    background-size: 2.5rem 2.4rem;
+    width: 3rem;
+    height: 3rem;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-image:  url("data:image/svg+xml,%3Csvg width='30' height='29' viewBox='0 0 30 29' fill='yellow' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='emoji-happy 1'%3E%3Cg id='Group'%3E%3Cpath id='Vector' d='M15.3264 14.828C14.5763 15.5779 13.5591 15.9991 12.4984 15.9991C11.4378 15.9991 10.4205 15.5779 9.67041 14.828M9.49841 10H9.50841M15.4984 10H15.5084M21.4984 12C21.4984 13.1819 21.2656 14.3522 20.8133 15.4442C20.361 16.5361 19.6981 17.5282 18.8624 18.364C18.0266 19.1997 17.0345 19.8626 15.9426 20.3149C14.8506 20.7672 13.6803 21 12.4984 21C11.3165 21 10.1462 20.7672 9.05426 20.3149C7.96233 19.8626 6.97018 19.1997 6.13445 18.364C5.29872 17.5282 4.63579 16.5361 4.1835 15.4442C3.7312 14.3522 3.49841 13.1819 3.49841 12C3.49841 9.61305 4.44662 7.32387 6.13445 5.63604C7.82228 3.94821 10.1115 3 12.4984 3C14.8854 3 17.1745 3.94821 18.8624 5.63604C20.5502 7.32387 21.4984 9.61305 21.4984 12Z' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.hw__emoji-area .hwe__btn {
+    padding: 1rem 1.6rem;
+    font-size: 1.4rem;
+    font-weight: 500;
+    line-height: 1.6rem;
+    color: #111;
+    min-width: 7.1rem;
+}
+
+.emoji-picker-container {
+    padding-left: 0;
+    padding-right: 0;
+    position: absolute;
+    bottom: 10rem;
+    right: 2rem;
+}
+
+.emoji-picker-container emoji-picker {
+    width: 100%;
+    margin-left: auto;
+    max-width: 30rem;
+}
+
+.hwe__chat-screen {
+    display: flex;
+    flex-direction: column;
+    height: 90vh;
+    background-color: #e5ddd5;
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+.hwe__chat-top--section {
+    background-color: #075e54;
+    color: white;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hwe__chat-top--section img {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+}
+
+.hwe__chat-body-section {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* ======= Improved Message Styles ======= */
+.messages-wrapper-user {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.replied, .received {
+    max-width: 50%;
+    margin: 8px 10px;
+    padding: 12px 16px;
+    border-radius: 15px;
+    position: relative;
+}
+
+.replied {
+    background: #075e54;
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 5px;
+    align-self: flex-end;
+}
+
+.received {
+    background: #ffffff;
+    color: #111;
+    margin-right: auto;
+    border-bottom-left-radius: 5px;
+    align-self: flex-start;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.msg_cotainer_send {
+    max-width: 100%;
+    width: fit-content;
+    word-break: break-word;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+.img_cont_msg {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.replied .img_cont_msg {
+    flex-direction: row-reverse;
+}
+
+.user_img_msg {
+    flex-shrink: 0;
+}
+
+.msg_time {
+    font-size: 11px;
+    color: rgba(255,255,255,0.7);
+}
+
+.received .msg_time {
+    color: rgba(0,0,0,0.5);
+}
+
+/* ======= Existing Attachment Styles ======= */
+.hw__chat-attachment--box {
+    max-width: 100%;
+    width: 100%;
+}
+
+.file-preview img,
+.file-preview video {
+    max-width: 100%;
+    border-radius: 8px;
+}
+
+.hw__chat-attachment--body {
+    position: relative;
+}
+
+.file-details {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.5);
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.download-link {
+    color: white;
+    text-decoration: none;
+}
+
+/* ======= Existing Action Area Styles ======= */
+.hwe__chart-action {
+    background-color: #f0f0f0;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-top: 1px solid #ddd;
+}
+
+.hwe__chart-action input {
+    flex-grow: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 20px;
+    outline: none;
+    font-size: 14px;
+}
+
+.send_btn {
+    background-color: #075e54;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    padding: 10px 12px;
+    transition: background 0.3s;
+}
+
+/* ======= Responsive Additions ======= */
+@media (max-width: 768px) {
+    .replied, .received {
+        max-width: 75%;
+    }
+
+    .emoji-picker-container {
+        bottom: 8rem;
+        right: 1rem;
+    }
+
+    .hwe__chat-screen {
+        height: 85vh;
+    }
+}
+
+/* ======= Preserved Existing Utilities ======= */
+.hwe__text-weight--500 { font-weight: 500; }
+.hwe__text-12 { font-size: 12px; }
+.hwe__text-grey { color: #666; }
+.hwe__btn-primary { background: #075e54; color: white; }
+/* ======= Base Styles (Mobile First) ======= */
+.hwe__chat-screen {
+    height: 100vh;
+}
+
+/* ======= Mobile (0-575px) ======= */
+@media (max-width: 575.98px) {
+    .hwe__chat-screen {
+        height: calc(100vh - 60px);
+        border-radius: 0;
+    }
+
+    .hwe__chat-top--section {
+        padding: 10px;
+    }
+
+    .hwe__chat-top--section img {
+        width: 35px;
+        height: 35px;
+    }
+
+    .replied, .received {
+        max-width: 85%;
+        padding: 10px 12px;
+        margin: 6px 8px;
+    }
+
+    .msg_cotainer_send {
+        font-size: 13px;
+    }
+
+    .emoji-picker-container {
+        bottom: 7rem;
+        right: 0.5rem;
+        max-width: 95%;
+    }
+
+    .hwe__chart-action input {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+}
+
+/* ======= Phones (576px-767px) ======= */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .replied, .received {
+        max-width: 75%;
+    }
+
+    .hwe__chat-screen {
+        height: 90vh;
+    }
+
+    .emoji-picker-container {
+        bottom: 8rem;
+    }
+}
+
+/* ======= Tablets (768px-991px) ======= */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .hwe__chat-screen {
+        height: 88vh;
+        max-width: 95%;
+        margin: 0 auto;
+    }
+
+    .replied, .received {
+        max-width: 60%;
+    }
+
+    .hwe__chat-top--section h4 {
+        font-size: 1.1rem;
+    }
+
+    .emoji-picker-container {
+        right: 1.5rem;
+    }
+}
+
+/* ======= Laptops (992px-1199px) ======= */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .hwe__chat-screen {
+        height: 92vh;
+        max-width: 85%;
+        margin: 0 auto;
+    }
+
+    .replied, .received {
+        max-width: 55%;
+    }
+
+    .msg_cotainer_send {
+        font-size: 15px;
+    }
+}
+
+/* ======= Desktops (1200px+) ======= */
+@media (min-width: 1200px) {
+    .hwe__chat-screen {
+        height: 94vh;
+        max-width: 75%;
+        margin: 0 auto;
+    }
+
+    .replied, .received {
+        max-width: 45%;
+    }
+
+    .hwe__chat-body-section {
+        padding: 20px 30px;
+    }
+}
+
+/* ======= Landscape Orientation Adjustments ======= */
+@media (max-height: 600px) and (orientation: landscape) {
+    .hwe__chat-screen {
+        height: 82vh;
+    }
+
+    .hwe__chat-top--section {
+        padding: 8px 15px;
+    }
+
+    .emoji-picker-container {
+        bottom: 6rem;
+    }
+}
+
+/* ======= 4K Screens (2560px+) ======= */
+@media (min-width: 2560px) {
+    .hwe__chat-screen {
+        max-width: 60%;
+        height: 96vh;
+    }
+
+    .replied, .received {
+        max-width: 40%;
+        padding: 15px 20px;
+    }
+
+    .msg_cotainer_send {
+        font-size: 16px;
+    }
+
+    .hwe__chart-action input {
+        font-size: 16px;
+        padding: 12px 18px;
+    }
+}
+
+/* ======= Foldable Devices ======= */
+@media (max-width: 280px) {
+    .hwe__chat-top--section img {
+        width: 30px;
+        height: 30px;
+    }
+
+    .replied, .received {
+        max-width: 90%;
+    }
+
+    .hwe__chart-action .hwe__btn {
+        min-width: auto;
+        padding: 8px 12px;
+    }
+}
+  /* Add these CSS rules */
+.hwe__chat-body-section {
+    /* Essential for scroll behavior */
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column-reverse; /* New messages push from bottom */
+
+    /* Smooth scrolling */
+    scroll-behavior: smooth;
+
+    /* Scrollbar styling */
+    scrollbar-width: thin;
+    scrollbar-color: #075e54 transparent;
+}
+
+/* Webkit scrollbar */
+.hwe__chat-body-section::-webkit-scrollbar {
+    width: 6px;
+}
+.hwe__chat-body-section::-webkit-scrollbar-thumb {
+    background-color: #075e54;
+    border-radius: 3px;
+}
+  </style>
+{% endblock %}
+{% block content %}
+<!-- ======= Main ======= -->
+<main class="main">
+    <!-- Order Tabs -->
+    <div class="d-flex flex-wrap">
+        <div class="tab-content w-full" id="orderTabContent">
+            <div class="tab-pane fade active show" id="tab-chat" role="tabpanel" aria-labelledby="tab-chat">
+                <div class="hwe__chat-screen">
+                    <div class="hwe__chat-top--section">
+                        <div class="d-flex align-items-center">
+                            <img src="{% static 'dashboard/images/art-circle-2x.png' %}" class="hwe__fluid me-3"
+                                width="34">
+                            <div>
+                                <h4 class="hwe__h6 mb-2">{{ order.provider }}</h4>
+                                <span class="d-inline-flex hwe__text-weight--500 hwe__text-12 hwe__text-grey">Sep 27
+                                    2022 03:33 AM</span>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="room-name" name="room-name" value="order1">
+                    <input type="hidden" name="user" id="user-id" value="{{request.user.id}}">
+                    <input type="hidden" name="thread" id="thread-id" value="{{thread.id}}">
+                    <div class="hwe__chat-body-section">
+                        <div class="d-flex align-items-center messages-wrapper-user" chat-id="chat_{{ thread.id }}">
+
+                            <div class="card-body msg_card_body" style="width: -webkit-fill-available;">
+                                <!------- messages ------->
+                                {% for date, chats in grouped_chats.items %}
+                                <div class="chat-date databasae-chat">
+                                    {% now "d M Y" as today %}
+                                    {% if date|date:"d M Y" == today %}
+                                    <h3
+                                        class="hwe__chat-date--head {% if date|date:'d M Y' == today %}today-active{% else %}not-active{% endif %}">
+                                        <span class="date_heading">
+                                            Today
+                                        </span>
+                                    </h3>
+                                    {% else %}
+                                    <h3 class="hwe__chat-date--head">
+                                        <span class="date_heading">
+                                            {{ date|date:"d M Y" }}
+                                        </span>
+                                    </h3>
+                                    {% endif %}
+                                </div>
+                                {% for chat in chats %}
+                                {% if chat.sender == request.user %}
+                                <div class="replied">
+                                    <div class="img_cont_msg d-flex align-items-center">
+                                        <span class="msg_time">
+                                            {{ chat.created|time:"h:i A" }}
+                                        </span>
+                                        <img width="28" height="28"
+                                            src="{% if chat.sender.pic %}{{chat.sender.pic.url}}{% else%}https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg{% endif %}"
+                                            class="rounded-circle user_img_msg">
+                                    </div>
+                                    {% if chat.content %}
+                                    <div class="msg_cotainer_send">
+                                        {{ chat.content }}
+                                    </div>
+                                    {% elif chat.file_path %}
+                                    <div class="hw__chat-attachment--box">
+                                        <div class="hw__chat-attachment--body">
+                                            <div class="file-preview">
+
+                                                {% if '.jpg' in chat.file_path or '.jpeg' in chat.file_path or '.png' in chat.file_path or '.gif' in chat.file_path or '.webp' in chat.file_path %}
+                                                <img src="{{ chat.file_path }}" alt="Image Preview">
+                                                {% elif '.pdf' in chat.file_path %}
+                                                <iframe id="if1" width="100%" height="280" style="visibility:visible"
+                                                    src="{{ chat.file_path }}"></iframe>
+                                                {% elif '.mp3' in chat.file_path %}
+                                                <div style="display: flex;">
+                                                    <audio controls>
+                                                        <source src="{{ chat.file_path }}" type="audio/mp3">
+                                                        Your browser does not support the audio element.
+                                                    </audio>
+                                                </div>
+                                                {% elif '.mp4' in chat.file_path or '.webm' in chat.file_path or '.mkv' in chat.file_path %}
+                                                <video poster="{{chat.file_path}}" playsinline="" autoplay="" muted=""
+                                                    loop="">
+                                                    <source src="{{chat.file_path}}"
+                                                        type="video/{{chat.extension|cut:'.'}}">
+                                                </video>
+                                                {% elif '.zip' in chat.file_path %}
+                                                <img src="{{ chat.file_path }}" alt="Image Preview">
+                                                {% else %}
+                                                <div class="unsupported-file">Unsupported file format</div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="file-details">
+                                                <a href="{{ chat.file_path }}" download class="download-link"><i
+                                                        class="bi bi-download"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% else %}
+                                    <p>Unsupported file format</p>
+                                    {% endif %}
+                                </div>
+
+                                {% else %}
+                                <div class="received">
+                                    <div class="img_cont_msg d-flex align-items-center">
+                                        <img width="28" height="28"
+                                            src="{% if chat.sender.pic %}{{chat.sender.pic.url}}{% else%}https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg{% endif %}"
+                                            class="rounded-circle user_img_msg">
+                                        <span class="msg_time"> {{ chat.created|time:"h:i A" }}
+                                        </span>
+                                    </div>
+                                    {% if chat.content %}
+                                    <div class="msg_cotainer_send">
+                                        {{ chat.content }}
+                                    </div>
+                                    {% elif chat.file_path %}
+                                    <div class="hw__chat-attachment--box">
+                                        <div class="hw__chat-attachment--body">
+                                            <div class="file-preview">
+
+                                                {% if '.jpg' in chat.file_path or '.jpeg' in chat.file_path or '.png' in chat.file_path or '.gif' in chat.file_path or '.webp' in chat.file_path %}
+                                                <img src="{{ chat.file_path }}" alt="Image Preview">
+                                                {% elif '.pdf' in chat.file_path %}
+                                                <iframe id="if1" width="100%" height="280" style="visibility:visible"
+                                                    src="{{ chat.file_path }}"></iframe>
+                                                {% elif '.mp3' in chat.file_path %}
+                                                <div style="display: flex;">
+                                                    <audio controls>
+                                                        <source src="{{ chat.file_path }}" type="audio/mp3">
+                                                        Your browser does not support the audio element.
+                                                    </audio>
+                                                </div>
+                                                {% elif '.mp4' in chat.file_path or '.webm' in chat.file_path or '.mkv' in chat.file_path %}
+                                                <video poster="{{chat.file_path}}" playsinline="" autoplay="" muted=""
+                                                    loop="">
+                                                    <source src="{{chat.file_path}}"
+                                                        type="video/{{chat.extension|cut:'.'}}">
+                                                </video>
+                                                {% elif '.zip' in chat.file_path %}
+                                                <img src="{{ chat.file_path }}" alt="Image Preview">
+                                                {% else %}
+                                                <div class="unsupported-file">Unsupported file format</div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="file-details">
+                                                <a href="{{ chat.file_path }}" download class="download-link"><i
+                                                        class="bi bi-download"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% else %}
+                                    <p>not working</p>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+
+                                {% endfor %}
+
+                                {% endfor %}
+
+
+                                <div class="chat-date ">
+                                    <h3 class="hwe__chat-date--head today"
+                                        style="justify-content: center;display: none;margin-bottom: 50px;">
+                                        <span class="date_heading">Today</span>
+                                    </h3>
+                                </div>
+
+                                <!------- messages ------->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer hwe__chart-action">
+                        <form id="send-message-form" style="width: -webkit-fill-available;">
+                            <div class="input-group">
+                                <input type="text" name="" data-emoji-picker="true" id="chat-message-input"
+                                    class="form-control type_msg" required placeholder="Send a Message" autocomplete="off">
+                                <div class="input-group-append hw__emoji-area">
+                                    <span class="emoji-happy"><i class="hwe__icon-emoji--happy"
+                                            id="emoji-icon"></i></span>
+                                    <button class="input-group-text send_btn hwe__btn hwe__btn-primary"
+                                        id="chat-message-submit" type="submit">SEND</button>
+                                </div>
+
+                            </div>
+                        </form>
+                        <div class="emoji-picker-container" style="display:none;"><emoji-picker></emoji-picker></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div><!-- End Order Tabs -->
+</main><!-- End #main -->
+{% endblock content %}
+
+{% block inline_javascript %}
+ <script src="{% static 'dashboard/js/jquery.min.js' %}"></script>
+  <script src="{% static 'dashboard/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'dashboard/js/slick.min.js' %}"></script>
+  <script src="{% static 'dashboard/js/main.js' %}"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+<script>
+    const emojiIcon = document.getElementById('emoji-icon');
+    const emojiPickerContainer = document.querySelector('.emoji-picker-container');
+    const inputField = document.getElementById('chat-message-input');
+    const emojiPicker = emojiPickerContainer.querySelector('emoji-picker');
+
+    emojiIcon.addEventListener('click', () => {
+        emojiPickerContainer.style.display = 'block';
+    });
+
+    emojiPicker.addEventListener('emoji-click', event => {
+        const emoji = event.detail.unicode;
+        const currentCursorPosition = inputField.selectionStart;
+        const currentValue = inputField.value;
+        const newValue = currentValue.slice(0, currentCursorPosition) + emoji + currentValue.slice(currentCursorPosition);
+
+        inputField.value = newValue;
+    });
+
+    document.addEventListener('click', event => {
+        const isClickedInside = emojiPickerContainer.contains(event.target) || emojiIcon.contains(event.target);
+        if (!isClickedInside) {
+            emojiPickerContainer.style.display = 'none';
+        }
+    });
+
+
+
+
+    let input_message = $('#chat-message-input')
+    let message_body = $('.msg_card_body')
+    let send_message_form = $('#send-message-form')
+
+    let send_file_form = $('#upload-file-form')
+    let input_file = $('#fileInput')
+
+    const submitFileButton = document.getElementById('send_file_submit_btn');
+    const USER_ID = document.getElementById('user-id').value;
+    const threadId = document.getElementById('thread-id').value;
+    const roomName = document.getElementById('room-name').value;
+    console.log("--------------------")
+    console.log(roomName)
+    let loc = window.location
+    let wsStart = 'ws://'
+    console.log(loc.protocol)
+    if (loc.protocol === 'https:') {
+        console.log("loc in if ")
+        wsStart = 'wss://'
+    }
+    console.log(wsStart)
+    let endpoint = wsStart + loc.host + '/ws/chat/' + roomName + '/'
+    const chatSocket = new WebSocket(endpoint);
+
+    chatSocket.onopen = async function (e) {
+        console.log('open', e)
+        send_message_form.on('submit', function (e) {
+            e.preventDefault()
+            let message = input_message.val()
+            let data = {
+                'message': message,
+                'sent_by': USER_ID,
+                'thread_id': threadId
+            }
+            data = JSON.stringify(data)
+            chatSocket.send(data)
+            $(this)[0].reset()
+        });
+
+        send_file_form.on('submit', function (e) {
+            e.preventDefault();
+            submitFileButton.disabled = true;
+            submitFileButton.textContent = 'Processing...';
+            var formData = new FormData(this);
+            $.ajax({
+                url: "{% url 'chat_start' %}",
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+
+                success: function (response) {
+                    console.log(response)
+
+                    let data = {
+                        'file_url': response.url,
+                        'sent_by': USER_ID,
+                        'thread_id': threadId
+                    }
+                    data = JSON.stringify(data)
+                    chatSocket.send(data)
+                    $('#addupload').modal('hide');
+                    submitFileButton.disabled = false;
+                    submitFileButton.textContent = 'Send File';
+                },
+                error: function (response) {
+                    console.log(response.responseJSON.msg)
+                    submitFileButton.disabled = false;
+                    submitFileButton.textContent = 'Send File';
+
+                }
+
+            });
+
+
+        });
+
+    }
+
+    chatSocket.onmessage = async function (e) {
+        console.log('message', e)
+        let data = JSON.parse(e.data)
+        console.log("Data of message", data)
+        let message = data['message']
+        let sent_by_id = data['sent_by']
+        let thread_id = data['thread_id']
+        let file_url = data['file_url']
+        console.log(message);
+        console.log(sent_by_id);
+        console.log(thread_id);
+        newMessage(message, file_url, sent_by_id, thread_id);
+        console.log("Function called ");
+
+
+    }
+
+    chatSocket.onerror = async function (e) {
+        console.log('error', e)
+    }
+
+    chatSocket.onclose = async function (e) {
+        console.log('close', e)
+    }
+
+    function newMessage(message, file_url, sent_by_id, thread_id) {
+        var messageClass = sent_by_id === USER_ID ? 'replied' : 'received';
+        var time = formatAMPM(new Date)
+        let message_element;
+        let chat_id = 'chat_' + thread_id
+        console.log(file_url)
+
+        if (file_url !== '') {
+            var fileType = getFileType(file_url);
+
+            message_element = `
+            <div class="${messageClass} today-chat">
+                <div class="hw__chat-attachment--box">
+                    <div class="hw__chat-attachment--body">
+                        <div class="file-preview">
+                            ${renderFilePreview(fileType, file_url)}
+                        </div>
+                        <div class="file-details">
+                            ${renderDownloadButton(file_url)}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        }
+        else {
+            if (sent_by_id == USER_ID) {
+                message_element = `
+                <div class="replied today-chat ">
+                    <div class="img_cont_msg d-flex align-items-center ">
+                        <span class="msg_time">
+                             ${time}
+                        </span>
+                       <img width="28" height="28" src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
+                         class="rounded-circle user_img_msg">
+                    </div>
+                    <div class="msg_cotainer_send">
+                            ${message}
+                    </div>
+                </div>
+            `
+            }
+            else {
+                message_element = `
+               <div class="received today-chat">
+                    <div class="img_cont_msg d-flex align-items-center">
+                    <img width="28" height="28" src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
+                         class="rounded-circle user_img_msg">
+                        <span class="msg_time">
+                             ${time}
+                        </span>
+
+                    </div>
+                    <div class="msg_cotainer_send">
+                            ${message}
+                    </div>
+               </div>
+            `
+            }
+        }
+        let message_body = $('.messages-wrapper-user[chat-id="' + chat_id + '"] .msg_card_body')
+        message_body.append($(message_element))
+        message_body.animate({
+            scrollTop: $(document).height()
+        }, 100);
+        input_message.val(null);
+        var todayActiveExists = $('.databasae-chat .today-active').length > 0;
+
+        if (!todayActiveExists) {
+            checkTodayChat();
+            console.log("check ")
+        }
+    }
+
+    function checkTodayChat() {
+        $('.chat-date h3.today').css('display', 'none'); // Hide the element by default
+
+        if ($('.today-chat').length > 0) {
+            $('.chat-date h3.today').css('display', 'flex');
+        }
+    }
+    function formatAMPM(date) {
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        hours = hours < 10 ? '0' + hours : hours; // Add leading zero if less than 10
+        minutes = minutes < 10 ? '0' + minutes : minutes; // Add leading zero if less than 10
+        var strTime = hours + ':' + minutes + ' ' + ampm;
+        return strTime;
+    }
+
+
+    function getFileType(file_url) {
+        // Extract file extension from the URL
+        var fileExtension = file_url.split('.').pop().toLowerCase();
+
+        // Define a mapping of supported file types and their corresponding extensions
+        var supportedFileTypes = {
+            'image': ['jpg', 'jpeg', 'png', 'gif'],
+            'pdf': ['pdf'],
+            'audio': ['mp3'],
+            'video': ['mp4', 'webm']
+        };
+
+        // Determine the file type based on the extension
+        for (var type in supportedFileTypes) {
+            if (supportedFileTypes[type].includes(fileExtension)) {
+                return type;
+            }
+        }
+
+        // Default to 'unsupported' if the file type is not recognized
+        return 'unsupported';
+    }
+
+    function renderFilePreview(fileType, file_url) {
+        switch (fileType) {
+            case 'image':
+                return `<img src="${file_url}" alt="Image Preview">`;
+            case 'pdf':
+                return `<iframe id="if1" width="100%" height="280" style="visibility:visible" src="${file_url}"></iframe>`;
+            case 'audio':
+                return `<div style="display: flex;"><audio controls><source src="${file_url}" type="audio/mp3">Your browser does not support the audio element.</audio></div>`;
+            case 'video':
+                return `<video poster="images/hero-video-placeholder.webp" playsinline="" autoplay="" muted="" loop=""><source src="${file_url}" type="video/${fileType}"></video>`;
+            default:
+                return '<div class="unsupported-file">Unsupported file format</div>';
+        }
+    }
+
+    function renderDownloadButton(file_url) {
+        return `<a href="${file_url}" download class="download-link"><i class="bi bi-download"></i></a>`;
+    }
+
+
+    // Tiny JavaScript helper (add at end of body)
+document.addEventListener('DOMContentLoaded', function() {
+    const chatBody = document.querySelector('.hwe__chat-body-section');
+    const observer = new MutationObserver(() => {
+        chatBody.scrollTop = chatBody.scrollHeight;
+    });
+
+    observer.observe(chatBody, {
+        childList: true,
+        subtree: true
+    });
+
+    // Initial scroll to bottom
+    chatBody.scrollTop = chatBody.scrollHeight;
+});
+</script>
+{% endblock inline_javascript %}

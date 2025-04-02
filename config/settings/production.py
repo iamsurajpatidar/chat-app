@@ -150,5 +150,15 @@ LOGGING = {
 }
 
 
+# django-rest-framework
+# -------------------------------------------------------------------------------
+# Tools that generate code samples can use SERVERS to point to the correct domain
+SPECTACULAR_SETTINGS["SERVERS"] = [
+    {
+        "url": env.str("API_BASE_URL", default="https://marinapy.com"),
+        "description": "Production server",
+    },
+]
 # Your stuff...
 # ------------------------------------------------------------------------------
+
