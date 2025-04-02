@@ -5,13 +5,13 @@
 {% block css %}
   <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="{% static 'dashboard/css/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
 
     <!-- CSS Front Template -->
-    <link rel="stylesheet" href="{% static 'dashboard/css/bootstrap-datepicker.min.css' %}">
-    <link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'dashboard/css/slick.css' %}">
-    <link href="{% static 'dashboard/css/style.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.min.css' %}">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/slick.css' %}">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
   <style>
   /* ======= Existing Styles ======= */
 .hwe__icon-emoji--happy {
@@ -426,7 +426,7 @@
                 <div class="hwe__chat-screen">
                     <div class="hwe__chat-top--section">
                         <div class="d-flex align-items-center">
-                            <img src="{% static 'dashboard/images/art-circle-2x.png' %}" class="hwe__fluid me-3"
+                            <img src="{% static 'images/art-circle-2x.png' %}" class="hwe__fluid me-3"
                                 width="34">
                             <div>
                                 <h4 class="hwe__h6 mb-2">{{ order.provider }}</h4>
@@ -613,10 +613,10 @@
 {% endblock content %}
 
 {% block inline_javascript %}
- <script src="{% static 'dashboard/js/jquery.min.js' %}"></script>
-  <script src="{% static 'dashboard/js/bootstrap.bundle.min.js' %}"></script>
-  <script src="{% static 'dashboard/js/slick.min.js' %}"></script>
-  <script src="{% static 'dashboard/js/main.js' %}"></script>
+ <script src="{% static 'js/jquery.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'js/slick.min.js' %}"></script>
+  <script src="{% static 'js/main.js' %}"></script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
@@ -879,7 +879,7 @@
             case 'audio':
                 return `<div style="display: flex;"><audio controls><source src="${file_url}" type="audio/mp3">Your browser does not support the audio element.</audio></div>`;
             case 'video':
-                return `<video poster="images/hero-video-placeholder.webp" playsinline="" autoplay="" muted="" loop=""><source src="${file_url}" type="video/${fileType}"></video>`;
+                return `<video poster="" playsinline="" autoplay="" muted="" loop=""><source src="${file_url}" type="video/${fileType}"></video>`;
             default:
                 return '<div class="unsupported-file">Unsupported file format</div>';
         }
